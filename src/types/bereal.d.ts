@@ -10,6 +10,14 @@ export interface Moment {
   posts: Post[];
 }
 
+export interface RefreshTokenRes {
+  token_type: string;
+  access_token: string;
+  expires_in: number;
+  scope: string;
+  refresh_token: string;
+}
+
 export interface MemoriesData {
   memoryDay: string;
   momentId: string;

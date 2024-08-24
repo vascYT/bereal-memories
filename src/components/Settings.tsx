@@ -1,7 +1,6 @@
 import { DialogClose } from "@radix-ui/react-dialog";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import { Settings } from "lucide-react";
-import { useState } from "react";
+import { useRef } from "react";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -13,22 +12,23 @@ import {
 } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { useTokenStore } from "~/lib/token_store";
 
 export function SettingsButton() {
-  const [accessToken, saveAccessToken] = useLocalStorage<string | null>(
-    "bereal_access_token",
-    null,
-  );
+  const accessToken = useTokenStore((state) => state.accessToken);
+  const refreshToken = useTokenStore((state) => state.refreshToken);
+  const setAccessToken = useTokenStore((state) => state.setAccessToken);
+  const setRefreshToken = useTokenStore((state) => state.setRefreshToken);
 
-  const [accessTokenValue, setAccessTokenValue] = useState<string | undefined>(
-    typeof accessToken === "string" ? accessToken : undefined,
-  );
+  const accessTokenInputRef = useRef<HTMLInputElement>(null);
+  const refreshTokenInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <Settings className="h-4 w-4" />
+          <Settings className="mr-1 h-4 w-4" />
+          <span>Settings</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-screen-md">
@@ -41,13 +41,18 @@ export function SettingsButton() {
               BeReal Access Token
             </Label>
             <Input
-              id="access-token"
-              value={accessTokenValue}
-              onChange={(e) => {
-                if (typeof e?.target?.value === "string") {
-                  setAccessTokenValue(e.target.value);
-                }
-              }}
+              ref={accessTokenInputRef}
+              defaultValue={accessToken ?? undefined}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              BeReal Refresh Token
+            </Label>
+            <Input
+              ref={refreshTokenInputRef}
+              defaultValue={refreshToken ?? undefined}
               className="col-span-3"
             />
           </div>
@@ -56,7 +61,10 @@ export function SettingsButton() {
           <DialogClose asChild>
             <Button
               type="submit"
-              onClick={() => saveAccessToken(accessTokenValue ?? null)}
+              onClick={() => {
+                setAccessToken(accessTokenInputRef.current?.value ?? null);
+                setRefreshToken(refreshTokenInputRef.current?.value ?? null);
+              }}
             >
               Save
             </Button>
