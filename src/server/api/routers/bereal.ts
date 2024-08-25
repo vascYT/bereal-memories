@@ -7,6 +7,10 @@ import type { Memories, Moment, RefreshTokenRes } from "~/types/bereal";
 import JSZip from "jszip";
 import sharp from "sharp";
 import moment from "moment";
+import { exiftool } from "exiftool-vendored";
+import { readFile, unlink } from "fs/promises";
+import path from "path";
+import os from "os";
 
 export const commonHeaders = {
   "Accept-Encoding": "gzip",
@@ -82,25 +86,33 @@ export const berealRouter = createTRPCRouter({
             ),
           );
 
-          const takenAt = moment.utc(post.takenAt);
-          // TODO: Exif data
-          // const takenAtStr = takenAt.format("YYYY:MM:DD HH:mm:ss");
-
           // Overlay images to recreate BeReal look
           const { width, height } = await secondaryImg.metadata();
           if (!width || !height) break;
           const resizedSecondaryImg = await secondaryImg
             .resize(Math.floor(width / 3), Math.floor(height / 3))
             .toBuffer();
-          const compositedImg = await primaryImg
+
+          const takenAt = moment(post.takenAt);
+          const fileName = `bereal-${takenAt.format("YYYYMMDD_HHmmss")}.jpeg`;
+          const tempPath = path.join(os.tmpdir(), fileName);
+          await primaryImg
             .composite([{ input: resizedSecondaryImg, left: 25, top: 25 }])
             .jpeg()
-            .toBuffer();
+            .toFile(tempPath);
 
-          zip.file(
-            `bereal-${takenAt.format("YYYYMMDD_HHmmss")}.jpeg`,
-            compositedImg,
+          // Add exif data
+          await exiftool.write(
+            tempPath,
+            {
+              AllDates: takenAt.format("YYYY-MM-DDTHH:mm:ss"),
+            },
+            { writeArgs: ["-overwrite_original"] },
           );
+          const result = await readFile(tempPath);
+          await unlink(tempPath);
+
+          zip.file(fileName, result);
         }
       }
 
