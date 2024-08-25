@@ -19,13 +19,17 @@ export const useSelectedMoments = create<SelectedMomentsState>()(
       }),
     multiAddMoment: (index, memories) => {
       const lastSelectedIndex = get().lastSelectedIndex;
-      console.log(`Last selected index is ${lastSelectedIndex}`);
 
-      if (lastSelectedIndex) {
+      if (lastSelectedIndex !== null) {
+        const [start, end] =
+          lastSelectedIndex <= index
+            ? [lastSelectedIndex, index]
+            : [index, lastSelectedIndex];
+
         set({
           momentIds: memories.data
-            .map((moment) => moment.momentId)
-            .slice(lastSelectedIndex, index + 1),
+            .slice(start, end + 1)
+            .map((moment) => moment.momentId),
         });
       }
     },
