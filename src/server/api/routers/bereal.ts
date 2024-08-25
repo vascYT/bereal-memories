@@ -3,7 +3,10 @@ import { ofetch } from "ofetch";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { env } from "~/env";
-import type { Memories, RefreshTokenRes } from "~/types/bereal";
+import type { Memories, Moment, RefreshTokenRes } from "~/types/bereal";
+import JSZip from "jszip";
+import sharp from "sharp";
+import moment from "moment";
 
 export const commonHeaders = {
   "Accept-Encoding": "gzip",
@@ -53,5 +56,55 @@ export const berealRouter = createTRPCRouter({
       );
 
       return res;
+    }),
+  generateImages: publicProcedure
+    .input(
+      z.object({ accessToken: z.string(), momentIds: z.array(z.string()) }),
+    )
+    .mutation(async ({ input }) => {
+      const zip = new JSZip();
+
+      for (const momentId of input.momentIds) {
+        const momentRes = await ofetch<Moment>(
+          `https://mobile.bereal.com/api/feeds/memories-v2/${momentId}`,
+          { headers: genereateHeaders(input.accessToken) },
+        );
+
+        for (const post of momentRes.posts) {
+          const primaryImg = sharp(
+            Buffer.from(
+              await ofetch(post.primary.url, { responseType: "arrayBuffer" }),
+            ),
+          );
+          const secondaryImg = sharp(
+            Buffer.from(
+              await ofetch(post.secondary.url, { responseType: "arrayBuffer" }),
+            ),
+          );
+
+          const takenAt = moment.utc(post.takenAt);
+          // TODO: Exif data
+          // const takenAtStr = takenAt.format("YYYY:MM:DD HH:mm:ss");
+
+          // Overlay images to recreate BeReal look
+          const { width, height } = await secondaryImg.metadata();
+          if (!width || !height) break;
+          const resizedSecondaryImg = await secondaryImg
+            .resize(Math.floor(width / 3), Math.floor(height / 3))
+            .toBuffer();
+          const compositedImg = await primaryImg
+            .composite([{ input: resizedSecondaryImg, left: 25, top: 25 }])
+            .jpeg()
+            .toBuffer();
+
+          zip.file(
+            `bereal-${takenAt.format("YYYYMMDD_HHmmss")}.jpeg`,
+            compositedImg,
+          );
+        }
+      }
+
+      const generatedZip = await zip.generateAsync({ type: "base64" });
+      return { zip: generatedZip };
     }),
 });
