@@ -10,6 +10,7 @@ import { exiftool } from "exiftool-vendored";
 import { readFile, unlink } from "fs/promises";
 import path from "path";
 import os from "os";
+import consola from "consola";
 
 export const commonHeaders = {
   "Accept-Encoding": "gzip",
@@ -65,57 +66,65 @@ export const berealRouter = createTRPCRouter({
       z.object({ accessToken: z.string(), momentIds: z.array(z.string()) }),
     )
     .mutation(async ({ input }) => {
-      const zip = new JSZip();
+      try {
+        const zip = new JSZip();
 
-      for (const momentId of input.momentIds) {
-        const momentRes = await ofetch<Moment>(
-          `https://mobile.bereal.com/api/feeds/memories-v2/${momentId}`,
-          { headers: genereateHeaders(input.accessToken) },
-        );
-
-        for (const post of momentRes.posts) {
-          const primaryImg = sharp(
-            Buffer.from(
-              await ofetch(post.primary.url, { responseType: "arrayBuffer" }),
-            ),
-          );
-          const secondaryImg = sharp(
-            Buffer.from(
-              await ofetch(post.secondary.url, { responseType: "arrayBuffer" }),
-            ),
+        for (const momentId of input.momentIds) {
+          const momentRes = await ofetch<Moment>(
+            `https://mobile.bereal.com/api/feeds/memories-v2/${momentId}`,
+            { headers: genereateHeaders(input.accessToken) },
           );
 
-          // Overlay images to recreate BeReal look
-          const { width, height } = await secondaryImg.metadata();
-          if (!width || !height) break;
-          const resizedSecondaryImg = await secondaryImg
-            .resize(Math.floor(width / 3), Math.floor(height / 3))
-            .toBuffer();
+          for (const post of momentRes.posts) {
+            const primaryImg = sharp(
+              Buffer.from(
+                await ofetch(post.primary.url, { responseType: "arrayBuffer" }),
+              ),
+            );
+            const secondaryImg = sharp(
+              Buffer.from(
+                await ofetch(post.secondary.url, {
+                  responseType: "arrayBuffer",
+                }),
+              ),
+            );
 
-          const takenAt = moment(post.takenAt);
-          const fileName = `bereal-${takenAt.format("YYYYMMDD_HHmmss")}.jpeg`;
-          const tempPath = path.join(os.tmpdir(), fileName);
-          await primaryImg
-            .composite([{ input: resizedSecondaryImg, left: 25, top: 25 }])
-            .jpeg()
-            .toFile(tempPath);
+            // Overlay images to recreate BeReal look
+            const { width, height } = await secondaryImg.metadata();
+            if (!width || !height) break;
+            const resizedSecondaryImg = await secondaryImg
+              .resize(Math.floor(width / 3), Math.floor(height / 3))
+              .toBuffer();
 
-          // Add exif data
-          await exiftool.write(
-            tempPath,
-            {
-              AllDates: takenAt.format("YYYY-MM-DDTHH:mm:ss"),
-            },
-            { writeArgs: ["-overwrite_original"] },
-          );
-          const result = await readFile(tempPath);
-          await unlink(tempPath);
+            const takenAt = moment(post.takenAt);
+            const fileName = `bereal-${takenAt.format("YYYYMMDD_HHmmss")}.jpeg`;
+            const tempPath = path.join(os.tmpdir(), fileName);
+            await primaryImg
+              .composite([{ input: resizedSecondaryImg, left: 25, top: 25 }])
+              .jpeg()
+              .toFile(tempPath);
 
-          zip.file(fileName, result);
+            // Add exif data
+            await exiftool.write(
+              tempPath,
+              {
+                AllDates: takenAt.format("YYYY-MM-DDTHH:mm:ss"),
+              },
+              { writeArgs: ["-overwrite_original"] },
+            );
+            const result = await readFile(tempPath);
+            await unlink(tempPath);
+
+            zip.file(fileName, result);
+          }
         }
+
+        const generatedZip = await zip.generateAsync({ type: "base64" });
+        return { zip: generatedZip };
+      } catch (e) {
+        consola.error(e);
       }
 
-      const generatedZip = await zip.generateAsync({ type: "base64" });
-      return { zip: generatedZip };
+      return { error: "An error occurred" };
     }),
 });

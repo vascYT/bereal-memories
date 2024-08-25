@@ -25,12 +25,18 @@ export default function ExportButton() {
             duration: Infinity,
             dismissible: false,
           });
-          const { zip } = await generateImages.mutateAsync({
+          const { zip, error } = await generateImages.mutateAsync({
             accessToken,
             momentIds,
           });
           showedToast.dismiss();
-          saveAs(new Blob([Buffer.from(zip, "base64")]), `bereal-export.zip`);
+          if (zip) {
+            saveAs(new Blob([Buffer.from(zip, "base64")]), `bereal-export.zip`);
+          } else if (error) {
+            toast({
+              description: error,
+            });
+          }
         }
       }}
     >
