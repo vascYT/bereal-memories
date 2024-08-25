@@ -21,7 +21,7 @@ export default function ExportButton() {
           const showedToast = toast({
             title: "Your export has started...",
             description:
-              "This may take a while, depending on how many items your selected.",
+              "This may take a while, depending on how many items you have selected.",
             duration: Infinity,
             dismissible: false,
           });
