@@ -15,33 +15,12 @@ I wanted to have my BeReals in my own gallery, but the app doesn't allow to expo
 
 
 ## How To Use
-This project is only meant to run locally on your own computer.
-
-
-Clone the project
+This project is only meant to run locally on your own computer. The best way to do this is by using [Docker](https://www.docker.com/) or [Podman](http://podman.io/):
 
 ```bash
-git clone https://github.com/vascyt/bereal-memories
+docker run -p 3000:3000 ghcr.io/vascyt/bereal-memories:latest
 ```
 
-Go to the project directory
+Then go to http://localhost:3000 in your browser.
 
-```bash
-cd bereal-memories
-```
-
-Install dependencies
-
-```bash
-pnpm install
-```
-
-Start the server
-
-```bash
-pnpm run dev
-```
-
-Finally, you need to set your access & refresh token in the web ui, which are then stored in the local storage of your browser.
-
-This is currently required because I haven't implemented the authentication flow (yet). But this should only be necessary once, as the access token will be automatically refreshed when it expires, so please don't change them once they are set.
+Finally, you need to set your access & refresh token in the web ui, which are then stored in the local storage of your browser. This is currently required because I haven't implemented the authentication flow (yet). But this should only be necessary once, as the access token will be automatically refreshed when it expires, so please don't change them once they are set.
