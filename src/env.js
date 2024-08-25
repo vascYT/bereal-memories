@@ -8,8 +8,6 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
-    BEREAL_DEVICE_ID: z.string(),
-    BEREAL_USER_ID: z.string(),
   },
 
   /**
@@ -27,8 +25,6 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    BEREAL_DEVICE_ID: process.env.BEREAL_DEVICE_ID,
-    BEREAL_USER_ID: process.env.BEREAL_USER_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

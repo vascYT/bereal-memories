@@ -2,7 +2,6 @@ import { z } from "zod";
 import { ofetch } from "ofetch";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { env } from "~/env";
 import type { Memories, Moment, RefreshTokenRes } from "~/types/bereal";
 import JSZip from "jszip";
 import sharp from "sharp";
@@ -17,12 +16,12 @@ export const commonHeaders = {
   "bereal-app-language": "en-US",
   "bereal-app-version": "2.11.0",
   "bereal-app-version-code": "1021596",
-  "bereal-device-id": env.BEREAL_DEVICE_ID,
+  // "bereal-device-id": "",
   "bereal-device-language": "en-US",
   "bereal-os-version": "12",
   "bereal-platform": "android",
   "bereal-timezone": "Europe/Berlin",
-  "bereal-user-id": env.BEREAL_USER_ID,
+  // "bereal-user-id": "",
   "User-Agent":
     "BeReal/2.11.0 (com.bereal.ft; build:1021596; Android 12) 4.12.0/OkHttp",
 };
