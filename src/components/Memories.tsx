@@ -22,7 +22,7 @@ export default function Memories() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="flex flex-wrap justify-center gap-4">
       {memories?.data ? (
         memories.data.map((moment, i) => (
           <Moment

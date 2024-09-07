@@ -17,26 +17,26 @@ export default function ExportButton() {
     <Button
       disabled={momentIds.length <= 0}
       onClick={async () => {
-        if (accessToken) {
-          const showedToast = toast({
-            title: "Your export has started...",
-            description:
-              "This may take a while, depending on how many items you have selected.",
-            duration: Infinity,
-            dismissible: false,
+        if (!accessToken) return;
+
+        const showedToast = toast({
+          title: "Your export has started...",
+          description:
+            "This may take a while, depending on how many items you have selected.",
+          duration: Infinity,
+          dismissible: false,
+        });
+        const { zip, error } = await generateImages.mutateAsync({
+          accessToken,
+          momentIds,
+        });
+        showedToast.dismiss();
+        if (zip) {
+          saveAs(new Blob([Buffer.from(zip, "base64")]), `bereal-export.zip`);
+        } else if (error) {
+          toast({
+            description: error,
           });
-          const { zip, error } = await generateImages.mutateAsync({
-            accessToken,
-            momentIds,
-          });
-          showedToast.dismiss();
-          if (zip) {
-            saveAs(new Blob([Buffer.from(zip, "base64")]), `bereal-export.zip`);
-          } else if (error) {
-            toast({
-              description: error,
-            });
-          }
         }
       }}
     >
