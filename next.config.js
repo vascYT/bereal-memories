@@ -3,11 +3,15 @@
  * for Docker builds.
  */
 await import("./src/env.js");
+import packageJson from "./package.json" with { type: "json" };
 
 /** @type {import("next").NextConfig} */
 const config = {
   output: "standalone",
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_VERSION: packageJson.version,
+  },
 
   /**
    * If you are using `appDir` then you must comment the below `i18n` config out.

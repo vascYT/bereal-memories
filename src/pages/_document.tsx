@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import { env } from "~/env";
 
 export default function Document() {
   return (
@@ -13,6 +14,16 @@ export default function Document() {
         <main className="grow px-5">
           <Main />
         </main>
+        <footer className="my-3">
+          <p className="text-center text-sm text-gray-300">
+            v{env.NEXT_PUBLIC_VERSION} •{" "}
+            <a href="https://github.com/vascYT/bereal-memories" target="_blank">
+              Source
+            </a>
+            <br />
+            Made with 💖 by vasc
+          </p>
+        </footer>
         <NextScript />
       </body>
     </Html>
