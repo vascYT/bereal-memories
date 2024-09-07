@@ -14,6 +14,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ENV SKIP_ENV_VALIDATION=1
+
 RUN corepack enable pnpm && pnpm run build
 
 FROM base AS runner
