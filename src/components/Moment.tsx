@@ -69,7 +69,7 @@ export default function Moment(props: Props) {
 
       <img
         alt="BeReal Thumbnail"
-        className="pointer-events-none absolute left-0 right-0 top-0 w-full rounded-md opacity-20"
+        className="pointer-events-none absolute left-0 right-0 top-0 h-full w-full rounded-md object-cover opacity-20"
         src={props.moment.mainPostThumbnail.url}
       />
     </div>

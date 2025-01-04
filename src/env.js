@@ -16,7 +16,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_VERSION: z.string(),
+    NEXT_PUBLIC_VERSION: z.string().optional(),
   },
 
   /**
