@@ -26,3 +26,8 @@ docker run -p 3000:3000 -e TZ=UTC ghcr.io/vascyt/bereal-memories:latest
 Then go to http://localhost:3000 in your browser.
 
 Finally, you need to set your access & refresh token in the web ui, which are then stored in the local storage of your browser. This is currently required because I haven't implemented the authentication flow (yet). But this should only be necessary once, as the access token will be automatically refreshed when it expires, so please don't change them once they are set.
+
+## Sponsors
+This project is proudly sponsored by [Tuta](https://tuta.com) 💖
+
+<a href="https://tuta.com"><img height="100" src="https://github.com/user-attachments/assets/fe67ef7e-30f2-4e14-85ba-03bdef900011"></a>
