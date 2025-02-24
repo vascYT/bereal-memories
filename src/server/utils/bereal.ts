@@ -29,7 +29,7 @@ export const genereateHeaders = (accessToken: string) => ({
 
 export async function fetchMemories(accessToken: string) {
   const res = await ofetch<Memories>(
-    "https://mobile.bereal.com/api/feeds/memories-v1",
+    "https://mobile-l7.bereal.com/api/feeds/memories-v1",
     { headers: genereateHeaders(accessToken) },
   );
 
@@ -38,7 +38,7 @@ export async function fetchMemories(accessToken: string) {
 
 export async function fetchMoment(momentId: string, accessToken: string) {
   const res = await ofetch<Moment>(
-    `https://mobile.bereal.com/api/feeds/memories-v2/${momentId}`,
+    `https://mobile-l7.bereal.com/api/feeds/memories-v2/${momentId}`,
     { headers: genereateHeaders(accessToken) },
   );
 
