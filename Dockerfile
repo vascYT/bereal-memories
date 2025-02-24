@@ -7,7 +7,8 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
+RUN npm i -g corepack@latest && corepack enable pnpm
+RUN pnpm i --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
@@ -16,7 +17,8 @@ COPY . .
 
 ENV SKIP_ENV_VALIDATION=1
 
-RUN corepack enable pnpm && pnpm run build
+RUN npm i -g corepack@latest && corepack enable pnpm
+RUN pnpm run build
 
 FROM base AS runner
 WORKDIR /app
