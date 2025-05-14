@@ -56,7 +56,7 @@ export interface Post {
   isLate: boolean;
   isMain: boolean;
   primary: Primary;
-  secondary: Secondary;
+  secondary?: Secondary;
   thumbnail: Thumbnail;
   takenAt: string;
   postedAt: string;

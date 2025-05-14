@@ -70,31 +70,37 @@ export async function generateCombinedImage(post: Post) {
       await ofetch(post.primary.url, { responseType: "arrayBuffer" }),
     ),
   );
-  const secondaryImg = sharp(
-    Buffer.from(
-      await ofetch(post.secondary.url, {
-        responseType: "arrayBuffer",
-      }),
-    ),
-  );
-
-  // Overlay images to recreate BeReal look
-  consola.info(`Overlaying images [${post.id}]`);
-  const { width, height } = await secondaryImg.metadata();
-  if (!width || !height) {
-    throw new Error("Invalid metadata");
-  }
-  const resizedSecondaryImg = await secondaryImg
-    .resize(Math.floor(width / 3), Math.floor(height / 3))
-    .toBuffer();
 
   const takenAt = moment(post.takenAt);
   const fileName = `bereal-${takenAt.format("YYYYMMDD_HHmmss")}.jpeg`;
   const tempPath = path.join(os.tmpdir(), fileName);
-  await primaryImg
-    .composite([{ input: resizedSecondaryImg, left: 25, top: 25 }])
-    .jpeg()
-    .toFile(tempPath);
+  if (post.secondary) {
+    const secondaryImg = sharp(
+      Buffer.from(
+        await ofetch(post.secondary.url, {
+          responseType: "arrayBuffer",
+        }),
+      ),
+    );
+
+    // Overlay images to recreate BeReal look
+    consola.info(`Overlaying images [${post.id}]`);
+    const { width, height } = await secondaryImg.metadata();
+    if (!width || !height) {
+      throw new Error("Invalid metadata");
+    }
+    const resizedSecondaryImg = await secondaryImg
+      .resize(Math.floor(width / 3), Math.floor(height / 3))
+      .toBuffer();
+
+    await primaryImg
+      .composite([{ input: resizedSecondaryImg, left: 25, top: 25 }])
+      .jpeg()
+      .toFile(tempPath);
+  } else {
+    // If no secondary image, just save the primary image
+    await primaryImg.jpeg().toFile(tempPath);
+  }
 
   // Add exif data
   consola.info(`Adding exif data [${post.id}]`);
