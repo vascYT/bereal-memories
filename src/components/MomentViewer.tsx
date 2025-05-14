@@ -55,7 +55,7 @@ export default function MomentViewer(props: Props) {
         <img
           className="w-56 rounded-md"
           alt="Secondary BeReal image"
-          src={post.secondary && post.secondary.url}
+          src={post.secondary?.url}
         ></img>
       </div>
       <div className="text-center">

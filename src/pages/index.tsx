@@ -30,7 +30,7 @@ export default function Home() {
           setAccessTokenVerified(true);
         })
         .catch((e) =>
-          console.log(`An error occured while refreshing tokens: ${e}`),
+          console.log(`An error occurred while refreshing tokens: ${e}`),
         );
     } else {
       setAccessTokenVerified(true);
