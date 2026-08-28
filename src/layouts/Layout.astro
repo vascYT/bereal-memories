@@ -1,0 +1,29 @@
+---
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="https://fav.farm/📸" />
+    <title>Astro Basics</title>
+  </head>
+  <body class="dark flex min-h-screen flex-col bg-neutral-950 text-white">
+    <h1 class="py-3 text-center text-3xl font-bold">BeReal Memories 📸</h1>
+    <main class="grow px-5">
+      <slot />
+    </main>
+    <footer class="my-3">
+      <p class="text-center text-sm text-gray-300">
+        v{__APP_VERSION__} •{" "}
+        <a href="https://github.com/vascYT/bereal-memories" target="_blank">
+          Source
+        </a>
+        <br />
+        Made with 💖 by vasc
+      </p>
+    </footer>
+  </body>
+</html>
