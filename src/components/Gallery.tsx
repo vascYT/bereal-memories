@@ -3,6 +3,7 @@ import DropZone from "./DropZone.tsx";
 import MemoryItem from "./MemoryItem.tsx";
 import { extractMemoriesFromZip, type Memory } from "../lib/bereal.ts";
 import ExportButton from "./ExportButton.tsx";
+import Info from "./Info.tsx";
 
 export default function Gallery() {
   const [zipFile, setZipFile] = useState<File>();
@@ -24,7 +25,12 @@ export default function Gallery() {
   }, [zipFile]);
 
   if (!memories || !zipFile) {
-    return <DropZone setZipFile={setZipFile} />;
+    return (
+      <>
+        <DropZone setZipFile={setZipFile} />
+        <Info />
+      </>
+    );
   }
 
   return (

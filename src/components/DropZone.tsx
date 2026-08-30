@@ -25,8 +25,8 @@ export default function DropZone({
       <FileIcon className="mr-2 h-4 w-4" />{" "}
       <p>
         {isDragActive
-          ? "Drop Profile & Activity zip here"
-          : "Drag and drop Profile & Activity zip here"}
+          ? "Drop the Profile & Activity file here"
+          : "Drag and drop the Profile & Activity file here"}
       </p>
       <input {...getInputProps()} />
     </div>

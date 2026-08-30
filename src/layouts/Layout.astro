@@ -11,7 +11,12 @@ import "../styles/global.css";
     <title>BeReal Memories</title>
   </head>
   <body class="dark flex min-h-screen flex-col bg-neutral-950 text-white">
-    <h1 class="py-3 text-center text-3xl font-bold">BeReal Memories 📸</h1>
+    <div class="py-3 text-center">
+      <h1 class="text-3xl font-bold mb-1">BeReal Memories 📸</h1>
+      <p class="text-sm text-gray-300">
+        A tool which allows you to view and export your BeReals.
+      </p>
+    </div>
     <main class="grow px-5">
       <slot />
     </main>
@@ -22,7 +27,7 @@ import "../styles/global.css";
           Source
         </a>
         <br />
-        Made with 💖 by vasc
+        Made with 💖 by <a href="https://vasc.dev">vasc</a>
       </p>
     </footer>
   </body>
