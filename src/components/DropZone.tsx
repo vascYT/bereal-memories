@@ -1,23 +1,18 @@
 import { FileIcon } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import usePostStore from "../lib/usePostStore";
-import { PostsSchema } from "../lib/bereal.ts";
 
-export default function DropZone() {
-  const setPosts = usePostStore((state) => state.setPosts);
-
+export default function DropZone({
+  setZipFile,
+}: {
+  setZipFile: (file: File | undefined) => void;
+}) {
   const onDrop = useCallback(async (files: File[]) => {
     if (!files || files.length == 0) return;
 
     const file = files[0];
-    try {
-      const txt = await file.text();
-      const json = JSON.parse(txt);
-      const parsed = PostsSchema.parse(json);
-      setPosts(parsed);
-    } catch (e) {
-      console.error("Couldn't process file");
+    if (file.type === "application/zip") {
+      setZipFile(file);
     }
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -29,7 +24,9 @@ export default function DropZone() {
     >
       <FileIcon className="mr-2 h-4 w-4" />{" "}
       <p>
-        {isDragActive ? "Drop post.json here" : "Drag and drop post.json here"}
+        {isDragActive
+          ? "Drop Profile & Activity zip here"
+          : "Drag and drop Profile & Activity zip here"}
       </p>
       <input {...getInputProps()} />
     </div>

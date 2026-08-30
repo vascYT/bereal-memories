@@ -6,6 +6,7 @@ import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  output: "static",
   integrations: [react()],
   vite: {
     define: {
