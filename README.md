@@ -1,6 +1,6 @@
 
 # BeReal Memories 📸
-Export your BeReal memories with a simple UI by parsing the BeReal data export package. Built with [Astro](https://astro.build/) & [Tailwind](https://tailwindcss.com/).
+Export your BeReal memories with a simple UI by parsing the BeReal data export package. Built with [Astro](https://astro.build/) & [Tailwind CSS](https://tailwindcss.com/).
 
 ## Motivation
 I wanted to have my BeReals in my own gallery, but the app doesn't allow anyone to export all their BeReals with one click. So I created this tool to make it easy to export my BeReals from time to time. It also embeds the BeReal date and location into the image's EXIF data so it's placed correctly next to other photos in your photo timeline.
