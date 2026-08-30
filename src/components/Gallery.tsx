@@ -39,6 +39,7 @@ export default function Gallery() {
             index={i}
             memory={m}
             memories={memories}
+            zipFile={zipFile}
           />
         ))}
       </div>

@@ -11,10 +11,12 @@ export default function MemoryItem({
   index,
   memory,
   memories,
+  zipFile,
 }: {
   index: number;
   memory: Memory;
   memories: Memory[];
+  zipFile: File;
 }) {
   const momentIds = useSelectedMemories((state) => state.memoryIds);
   const addMoment = useSelectedMemories((state) => state.addMemory);
@@ -60,7 +62,7 @@ export default function MemoryItem({
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/80 data-[state=open]:animate-overlayShow z-40" />
           <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] max-w-125 -translate-x-1/2 -translate-y-1/2 rounded-md bg-black border border-white/20 focus:outline-none p-5 z-50">
-            <MemoryViewer memory={memory} />
+            <MemoryViewer memory={memory} zipFile={zipFile} />
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

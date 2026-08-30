@@ -1,7 +1,14 @@
 import moment from "moment";
 import { getImageUrlsFromMemory, type Memory } from "../lib/bereal.ts";
+import ExportButton from "./ExportButton.tsx";
 
-export default function MemoryViewer({ memory }: { memory: Memory }) {
+export default function MemoryViewer({
+  memory,
+  zipFile,
+}: {
+  memory: Memory;
+  zipFile: File;
+}) {
   const { frontImgUrl, backImgUrl } = getImageUrlsFromMemory(memory);
 
   return (
@@ -21,26 +28,8 @@ export default function MemoryViewer({ memory }: { memory: Memory }) {
           src={backImgUrl}
         ></img>
       </div>
-      <div className="text-center">
-        {/* <Button
-          onClick={async () => {
-            if (!accessToken) return;
-
-            const { fileName, image, error } = await generateImage.mutateAsync({
-              accessToken,
-              momentId: props.moment.momentId,
-              postIndex: selectedIndex,
-            });
-            if (error) {
-              toast({ description: error });
-            } else if (image && fileName) {
-              saveAs(new Blob([Buffer.from(image, "base64")]), fileName);
-            }
-          }}
-        >
-          <LucideDownload className="mr-1 size-4" />
-          <span>Download</span>
-        </Button> */}
+      <div className="mt-3 flex items-center justify-center">
+        <ExportButton zipFile={zipFile} memory={memory} />
       </div>
     </div>
   );
